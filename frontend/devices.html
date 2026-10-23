@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devices &amp; IoT Meters | TN Energy Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <a href="dashboard.html" class="brand" aria-label="TN Energy Management Home">
+        <div class="brand-icon" aria-hidden="true">⚡</div>
+        <div>
+          <div class="brand-title">TN Energy Management</div>
+          <div class="brand-subtitle">IoT Meters &amp; Smart Sensors</div>
+        </div>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <ul></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Smart Meters &amp; IoT Device Management</h1>
+        <p class="page-desc">Connect and manage smart energy meters, solar rooftop inverters, and telemetry gateways.</p>
+      </div>
+    </div>
+
+    <div id="deviceAlert" role="status" aria-live="polite"></div>
+
+    <div class="grid-cols-2">
+      <!-- Register Device Card -->
+      <section class="card" aria-labelledby="addDeviceHeading">
+        <div class="card-header">
+          <h2 id="addDeviceHeading" class="card-title">Register New Energy Device</h2>
+        </div>
+        <form id="addDeviceForm">
+          <div class="form-group">
+            <label for="deviceName">Device Name *</label>
+            <input type="text" id="deviceName" required placeholder="e.g. Domestic Smart Meter - Grid Main">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="deviceType">Device Type *</label>
+              <select id="deviceType" required>
+                <option value="smart_meter">Smart Energy Meter (LT)</option>
+                <option value="solar_inverter">Rooftop Solar Inverter</option>
+                <option value="iot_gateway">IoT Gateway / Concentrator</option>
+                <option value="sub_meter">Sub-Meter</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="deviceIdentifier">Device Serial / MAC Identifier *</label>
+              <input type="text" id="deviceIdentifier" required placeholder="e.g. TN-SMART-98402">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Register Device &rarr;
+          </button>
+        </form>
+      </section>
+
+      <!-- IoT Ingestion Protocol Architecture Card -->
+      <section class="card" aria-labelledby="archHeading">
+        <div class="card-header">
+          <h2 id="archHeading" class="card-title">IoT Telemetry Architecture</h2>
+        </div>
+        <div style="font-size:0.95rem; line-height: 1.6; color:var(--text-primary);">
+          <p style="margin-bottom:0.75rem;">
+            <strong>HTTP / MQTT REST Bridge:</strong> Smart meters stream JSON payloads to the endpoint <code>/api/energy/readings</code> authenticated via JWT token or device key.
+          </p>
+          <p style="margin-bottom:0.75rem;">
+            <strong>Tamper &amp; Zero-Drop Detection:</strong> If consecutive meter readings show a negative difference, the system automatically detects potential meter rollovers or reset events.
+          </p>
+          <p>
+            <strong>Edge Simulation:</strong> Click "Stream Telemetry" on any registered device below to simulate live telemetry packets.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Registered Devices Table -->
+    <section class="card" style="margin-top: 1.5rem;" aria-labelledby="metersHeading">
+      <div class="card-header">
+        <h2 id="metersHeading" class="card-title">Registered Meters &amp; Sensors</h2>
+      </div>
+      <div class="table-responsive">
+        <table id="devicesTable">
+          <thead>
+            <tr>
+              <th>Device Name</th>
+              <th>Type</th>
+              <th>Identifier</th>
+              <th>Status</th>
+              <th>Last Reading</th>
+              <th>Last Seen</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="7" style="text-align:center; color:var(--text-tertiary);">Loading devices...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Cloud Computing in Energy Management System. Tamil Nadu Power Grid Analytics.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDevices();
+
+      const form = document.getElementById('addDeviceForm');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const alertBox = document.getElementById('deviceAlert');
+        alertBox.innerHTML = '';
+
+        const payload = {
+          deviceName: document.getElementById('deviceName').value,
+          deviceType: document.getElementById('deviceType').value,
+          deviceIdentifier: document.getElementById('deviceIdentifier').value
+        };
+
+        try {
+          await API.registerDevice(payload);
+          alertBox.innerHTML = '<div class="alert alert-success">Smart meter registered successfully!</div>';
+          document.getElementById('deviceName').value = '';
+          document.getElementById('deviceIdentifier').value = '';
+          await loadDevices();
+        } catch (err) {
+          alertBox.innerHTML = `<div class="alert alert-danger">${escapeHtml(err.message)}</div>`;
+        }
+      });
+    });
+
+    async function loadDevices() {
+      const tbody = document.querySelector('#devicesTable tbody');
+      try {
+        const res = await API.getDevices();
+        const devices = res.devices || [];
+
+        if (devices.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-tertiary); padding:2rem;">No smart meters registered yet. Use the form above to add your meter.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = devices.map(d => {
+          const lastSeen = new Date(d.lastSeenAt).toLocaleDateString('en-IN', {
+            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+          return `
+            <tr>
+              <td><strong>${escapeHtml(d.deviceName)}</strong></td>
+              <td><span class="badge badge-info">${d.deviceType.replace('_', ' ')}</span></td>
+              <td><code>${escapeHtml(d.deviceIdentifier)}</code></td>
+              <td><span class="badge ${d.status === 'online' ? 'badge-success' : 'badge-danger'}">${d.status}</span></td>
+              <td>${d.lastReadingKwh ? d.lastReadingKwh + ' kWh' : '-'}</td>
+              <td>${lastSeen}</td>
+              <td>
+                <button onclick="handleStreamTelemetry('${d._id}')" class="btn btn-secondary btn-sm" style="min-height:30px;">Stream Telemetry</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--color-red);">${err.message}</td></tr>`;
+      }
+    }
+
+    async function handleStreamTelemetry(id) {
+      const alertBox = document.getElementById('deviceAlert');
+      try {
+        const res = await API.simulateDeviceTelemetry(id);
+        alertBox.innerHTML = `<div class="alert alert-success">Received telemetry: ${res.reading.consumptionKwh} kWh recorded from device!</div>`;
+        await loadDevices();
+      } catch (err) {
+        alertBox.innerHTML = `<div class="alert alert-danger">${escapeHtml(err.message)}</div>`;
+      }
+    }
+  </script>
+</body>
+</html>

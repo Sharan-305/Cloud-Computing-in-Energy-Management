@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML Usage Prediction &amp; Forecasting | TN Energy Management</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <a href="dashboard.html" class="brand" aria-label="TN Energy Management Home">
+        <div class="brand-icon" aria-hidden="true">⚡</div>
+        <div>
+          <div class="brand-title">TN Energy Management</div>
+          <div class="brand-subtitle">Machine Learning &amp; Analytics</div>
+        </div>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <ul></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">XGBoost Energy Forecasting &amp; Pattern Analysis</h1>
+        <p class="page-desc">
+          Supervised time-series regression with lag features, moving statistics, and integrated TNERC cost calculations.
+        </p>
+      </div>
+      <div>
+        <button id="runForecastBtn" class="btn btn-primary btn-sm">
+          ⚡ Re-train Model &amp; Forecast
+        </button>
+      </div>
+    </div>
+
+    <!-- Anomaly notification banner -->
+    <div id="anomalyBanner" style="display:none;" class="alert alert-warning" role="alert">
+      <strong>⚠️ Anomaly Alert:</strong> <span id="anomalyBannerText"></span>
+    </div>
+
+    <!-- 3 Forecast Period Cards (Day, Week, Billing Period) -->
+    <section class="grid-cols-4" aria-label="Forecast Horizons">
+      <div class="card stat-card">
+        <div class="stat-label">Next 24 Hours</div>
+        <div class="stat-value" id="nextDayKwh">0.0 <span style="font-size:1.1rem; font-weight:500;">kWh</span></div>
+        <div class="stat-sub">Est. Cost: <strong id="nextDayCost">₹ 0.00</strong></div>
+      </div>
+
+      <div class="card stat-card blue">
+        <div class="stat-label">Next 7 Days</div>
+        <div class="stat-value" id="nextWeekKwh">0.0 <span style="font-size:1.1rem; font-weight:500;">kWh</span></div>
+        <div class="stat-sub">Est. Cost: <strong id="nextWeekCost">₹ 0.00</strong></div>
+      </div>
+
+      <div class="card stat-card amber">
+        <div class="stat-label">Next Bi-Monthly Cycle (60 Days)</div>
+        <div class="stat-value" id="nextCycleKwh">0.0 <span style="font-size:1.1rem; font-weight:500;">kWh</span></div>
+        <div class="stat-sub">Est. TNERC Bill: <strong id="nextCycleCost">₹ 0.00</strong></div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="stat-label">Identified Pattern</div>
+        <div class="stat-value" style="font-size:1.5rem; display:flex; align-items:center; height:50px;">
+          <span id="patternBadge" class="badge badge-success">Analyzing</span>
+        </div>
+        <div class="stat-sub" id="patternSubDesc">Statistical behavioral classifier</div>
+      </div>
+    </section>
+
+    <!-- Chart & Model Metrics -->
+    <div class="grid-cols-2">
+      <!-- 7-Day Ahead Projection Chart -->
+      <section class="card" aria-labelledby="forecastChartHeading">
+        <div class="card-header">
+          <h2 id="forecastChartHeading" class="card-title">7-Day Ahead Consumption &amp; Daily Cost Projection</h2>
+          <span class="badge badge-info">XGBoost Horizon</span>
+        </div>
+        <div style="position: relative; height: 320px; width: 100%;">
+          <canvas id="forecastChart" role="img" aria-label="Bar and line chart showing 7-day ahead daily projected energy consumption in kWh and estimated daily electricity cost in INR"></canvas>
+        </div>
+      </section>
+
+      <!-- Model Performance & Diagnostics -->
+      <section class="card" aria-labelledby="diagnosticsHeading">
+        <div class="card-header">
+          <h2 id="diagnosticsHeading" class="card-title">Model Specifications &amp; Validation</h2>
+          <span class="badge badge-success" id="modelVerBadge">v3.2</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:0.65rem; font-size:0.94rem;">
+          <div class="bill-line-item">
+            <span>Algorithm:</span>
+            <strong id="modelName">XGBoost Regressor (Python)</strong>
+          </div>
+          <div class="bill-line-item">
+            <span>Engineered Features:</span>
+            <span>Lag-1, Lag-2, Lag-7, Rolling 7-Day Mean &amp; Std, Day-of-Week, Month</span>
+          </div>
+          <div class="bill-line-item">
+            <span>Chronological Validation MAE:</span>
+            <strong id="valMae">- kWh</strong>
+          </div>
+          <div class="bill-line-item">
+            <span>Chronological Validation RMSE:</span>
+            <strong id="valRmse">- kWh</strong>
+          </div>
+          <div class="bill-line-item">
+            <span>95% Confidence Interval (7 Days):</span>
+            <span id="confInterval">-</span>
+          </div>
+          <div class="bill-line-item">
+            <span>Pattern Trend Slope:</span>
+            <span id="trendSlope">-</span>
+          </div>
+          <div class="bill-line-item">
+            <span>Historical Samples Trained:</span>
+            <span id="samplesTrained">-</span>
+          </div>
+        </div>
+
+        <div class="alert alert-info" style="margin-top:1.25rem; font-size:0.86rem; padding:0.85rem 1rem;">
+          <strong>Explainability Note:</strong> The machine-learning model solely predicts physical energy units (kWh). Projected costs are calculated deterministically by sending forecasted consumption through the Tamil Nadu Electricity Regulatory Commission (TNERC) tariff engine.
+        </div>
+      </section>
+    </div>
+
+    <!-- Daily Forecast Steps Table -->
+    <section class="card" style="margin-top: 1.5rem;" aria-labelledby="dailyTableHeading">
+      <div class="card-header">
+        <h2 id="dailyTableHeading" class="card-title">Daily Forecast Breakdown</h2>
+      </div>
+      <div class="table-responsive">
+        <table id="dailyForecastTable">
+          <thead>
+            <tr>
+              <th>Forecast Date</th>
+              <th>Predicted Units (kWh)</th>
+              <th>Estimated Day Cost (INR)</th>
+              <th>Applicable Tariff Basis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4" style="text-align:center; color:var(--text-tertiary);">Loading projection breakdown...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Cloud Computing in Energy Management System. Tamil Nadu Power Grid Analytics.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    let forecastChart = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadForecast();
+
+      const btn = document.getElementById('runForecastBtn');
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        btn.textContent = 'Fitting Model & Generating Forecast...';
+        try {
+          await API.generatePrediction('next_billing_period');
+          await loadForecast();
+        } catch (err) {
+          alert('Forecast failed: ' + err.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = '⚡ Re-train Model & Forecast';
+        }
+      });
+    });
+
+    async function loadForecast() {
+      try {
+        let res = await API.getLatestPrediction();
+        let p = res.prediction;
+
+        if (!p) {
+          const gen = await API.generatePrediction('next_billing_period');
+          p = gen.prediction;
+        }
+
+        if (!p) return;
+
+        const nextDayKwh = p.dailyForecasts && p.dailyForecasts[0] ? p.dailyForecasts[0].predictedKwh : (p.predictedKwh / 60);
+        const nextDayCost = p.dailyForecasts && p.dailyForecasts[0] ? p.dailyForecasts[0].estimatedCostInr : 0;
+
+        document.getElementById('nextDayKwh').innerHTML = `${Number(nextDayKwh).toFixed(2)} <span style="font-size:1.1rem; font-weight:500;">kWh</span>`;
+        document.getElementById('nextDayCost').textContent = `₹ ${Number(nextDayCost).toFixed(2)}`;
+
+        const weekKwh = (p.dailyForecasts || []).reduce((sum, d) => sum + (d.predictedKwh || 0), 0) || (nextDayKwh * 7);
+        const weekCost = (p.dailyForecasts || []).reduce((sum, d) => sum + (d.estimatedCostInr || 0), 0);
+
+        document.getElementById('nextWeekKwh').innerHTML = `${Number(weekKwh).toFixed(2)} <span style="font-size:1.1rem; font-weight:500;">kWh</span>`;
+        document.getElementById('nextWeekCost').textContent = `₹ ${Number(weekCost).toFixed(2)}`;
+
+        document.getElementById('nextCycleKwh').innerHTML = `${Number(p.predictedKwh).toFixed(1)} <span style="font-size:1.1rem; font-weight:500;">kWh</span>`;
+        document.getElementById('nextCycleCost').textContent = `₹ ${Number(p.predictedCost).toFixed(2)}`;
+
+        const patternBadge = document.getElementById('patternBadge');
+        const pat = (p.usagePattern || 'stable').toLowerCase();
+        patternBadge.textContent = pat.toUpperCase();
+        patternBadge.className = 'badge ' + (
+          pat === 'stable' ? 'badge-success' :
+          pat === 'increasing' ? 'badge-warning' :
+          pat === 'seasonal' ? 'badge-info' : 'badge-danger'
+        );
+        document.getElementById('patternSubDesc').textContent = `Classification: ${pat.replace('_', ' ')}`;
+
+        const anomalyBanner = document.getElementById('anomalyBanner');
+        if (p.anomalyDetected) {
+          anomalyBanner.style.display = 'flex';
+          document.getElementById('anomalyBannerText').textContent = p.anomalyReason || 'Spike above normal threshold detected.';
+        } else {
+          anomalyBanner.style.display = 'none';
+        }
+
+        document.getElementById('modelVerBadge').textContent = p.modelVersion || 'v3.2';
+        document.getElementById('modelName').textContent = p.modelType || 'XGBoost Supervised Regressor';
+
+        if (p.confidenceInterval) {
+          document.getElementById('confInterval').textContent = `${p.confidenceInterval.lowerKwh} kWh to ${p.confidenceInterval.upperKwh} kWh`;
+        }
+
+        const tbody = document.querySelector('#dailyForecastTable tbody');
+        if (p.dailyForecasts && p.dailyForecasts.length > 0) {
+          tbody.innerHTML = p.dailyForecasts.map(d => `
+            <tr>
+              <td><strong>${d.date}</strong></td>
+              <td>${Number(d.predictedKwh).toFixed(2)} kWh</td>
+              <td><strong>₹ ${Number(d.estimatedCostInr || 0).toFixed(2)}</strong></td>
+              <td><span style="font-size:0.85rem; color:var(--text-tertiary);">TNERC LT-1A Domestic</span></td>
+            </tr>
+          `).join('');
+        }
+
+        renderForecastChart(p.dailyForecasts || []);
+
+      } catch (err) {
+        console.error('Forecast load error:', err);
+      }
+    }
+
+    function renderForecastChart(dailyForecasts) {
+      const ctx = document.getElementById('forecastChart').getContext('2d');
+      const labels = dailyForecasts.map(d => new Date(d.date).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }));
+      const kwhData = dailyForecasts.map(d => d.predictedKwh);
+      const costData = dailyForecasts.map(d => d.estimatedCostInr || 0);
+
+      if (forecastChart) {
+        forecastChart.destroy();
+      }
+
+      forecastChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Forecasted Energy (kWh)',
+              data: kwhData,
+              backgroundColor: 'rgba(2, 132, 199, 0.75)',
+              borderRadius: 6,
+              yAxisID: 'y'
+            },
+            {
+              label: 'Est. Day Cost (₹)',
+              data: costData,
+              type: 'line',
+              borderColor: '#d97706',
+              backgroundColor: '#d97706',
+              tension: 0.2,
+              pointRadius: 5,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: { display: true, text: 'Energy (kWh)' }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: { display: true, text: 'Estimated Cost (₹)' },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | TN Energy Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="brand" aria-label="TN Energy Management Home">
+        <div class="brand-icon" aria-hidden="true">⚡</div>
+        <div>
+          <div class="brand-title">TN Energy Management</div>
+          <div class="brand-subtitle">Cloud &amp; AI Power Grid</div>
+        </div>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <ul></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main style="max-width: 480px; margin: 3rem auto;">
+    <div class="page-header" style="text-align: center; justify-content: center;">
+      <div>
+        <h1 class="page-title">Sign In</h1>
+        <p class="page-desc">Access your electricity dashboard, bills, and ML forecasts.</p>
+      </div>
+    </div>
+
+    <div id="alertBox" role="status" aria-live="polite"></div>
+
+    <div class="card">
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" autocomplete="email" required placeholder="name@domain.com">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="••••••••">
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%;">
+            Sign In &rarr;
+          </button>
+        </div>
+
+        <p style="text-align: center; margin-top: 1.25rem; font-size: 0.9rem; color: var(--text-secondary);">
+          Don't have an account? <a href="register.html" style="color: var(--color-green-dark); font-weight: 600;">Register here</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Cloud Computing in Energy Management System. Tamil Nadu Power Grid Analytics.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('loginForm');
+      const alertBox = document.getElementById('alertBox');
+      const submitBtn = document.getElementById('submitBtn');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('expired')) {
+        alertBox.innerHTML = `<div class="alert alert-warning">Your session has expired. Please sign in again.</div>`;
+      } else if (urlParams.get('logged_out')) {
+        alertBox.innerHTML = `<div class="alert alert-info">You have been logged out successfully.</div>`;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox.innerHTML = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Verifying Credentials...';
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          await API.login(email, password);
+          alertBox.innerHTML = `<div class="alert alert-success">Login successful! Loading dashboard...</div>`;
+          const redirect = urlParams.get('redirect') || 'dashboard.html';
+          setTimeout(() => {
+            window.location.href = redirect;
+          }, 700);
+        } catch (err) {
+          alertBox.innerHTML = `<div class="alert alert-danger">${escapeHtml(err.message)}</div>`;
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In →';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

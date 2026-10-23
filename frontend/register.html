@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration | TN Energy Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="brand" aria-label="TN Energy Management Home">
+        <div class="brand-icon" aria-hidden="true">⚡</div>
+        <div>
+          <div class="brand-title">TN Energy Management</div>
+          <div class="brand-subtitle">Cloud &amp; AI Power Grid</div>
+        </div>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <ul></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main style="max-width: 720px;">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Register Tamil Nadu Account</h1>
+        <p class="page-desc">Create your authentic consumer account and link your electricity service connection.</p>
+      </div>
+    </div>
+
+    <div id="alertBox" role="status" aria-live="polite"></div>
+
+    <div class="card">
+      <form id="registerForm" novalidate>
+        <h2 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
+          1. Account Credentials
+        </h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" name="name" autocomplete="name" required placeholder="e.g. Senthil Kumar" aria-required="true">
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" autocomplete="email" required placeholder="name@domain.com" aria-required="true">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password">Password (minimum 6 characters) *</label>
+            <input type="password" id="password" name="new-password" autocomplete="new-password" required minlength="6" placeholder="••••••••" aria-required="true">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="tel" autocomplete="tel" placeholder="e.g. 9840123456">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="role">Consumer Classification</label>
+          <select id="role">
+            <option value="home_user">Domestic / Household Consumer (Home User)</option>
+            <option value="industry_user">Commercial / Industrial Consumer</option>
+          </select>
+        </div>
+
+        <h2 style="font-size: 1.1rem; color: var(--text-primary); margin: 1.75rem 0 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
+          2. Tamil Nadu Service Location Details
+        </h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="district">District (Tamil Nadu) *</label>
+            <select id="district" required aria-required="true">
+              <option value="">Loading Tamil Nadu districts...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cityOrTown">City / Town / Taluk *</label>
+            <input type="text" id="cityOrTown" required placeholder="e.g. Mylapore, Chennai" aria-required="true">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pincode">PIN Code (Tamil Nadu 6xxxxx) *</label>
+            <input type="text" id="pincode" pattern="^[6][0-4]\d{4}$" required placeholder="e.g. 600004" aria-required="true">
+          </div>
+          <div class="form-group">
+            <label for="tariffCategory">Tariff Category</label>
+            <select id="tariffCategory">
+              <option value="domestic">Domestic (LT Tariff 1A - 100 Free Units)</option>
+              <option value="commercial">Commercial (LT Tariff IIIA)</option>
+              <option value="industrial">Industrial (LT Tariff IIIB)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="serviceAddress">Service Street Address *</label>
+          <input type="text" id="serviceAddress" required placeholder="Door No, Street Name, Locality" aria-required="true">
+        </div>
+
+        <div class="form-group">
+          <label for="consumerNumber">TANGEDCO Consumer Number (Optional)</label>
+          <input type="text" id="consumerNumber" placeholder="e.g. 01-123-456-789">
+          <small style="color:var(--text-tertiary); font-size:0.8rem; margin-top:0.25rem; display:block;">Your connection number is securely stored.</small>
+        </div>
+
+        <div style="margin-top: 2rem;">
+          <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%;">
+            Create Account &amp; Proceed to Dashboard &rarr;
+          </button>
+        </div>
+
+        <p style="text-align: center; margin-top: 1.25rem; font-size: 0.9rem; color: var(--text-secondary);">
+          Already have an account? <a href="login.html" style="color: var(--color-green-dark); font-weight: 600;">Sign in here</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Cloud Computing in Energy Management System. Tamil Nadu Power Grid Analytics.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await populateDistrictDropdown('district', 'Chennai');
+
+      const form = document.getElementById('registerForm');
+      const alertBox = document.getElementById('alertBox');
+      const submitBtn = document.getElementById('submitBtn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox.innerHTML = '';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Registering Account...';
+
+        const payload = {
+          fullName: document.getElementById('fullName').value,
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+          phone: document.getElementById('phone').value,
+          role: document.getElementById('role').value,
+          district: document.getElementById('district').value,
+          cityOrTown: document.getElementById('cityOrTown').value,
+          pincode: document.getElementById('pincode').value,
+          tariffCategory: document.getElementById('tariffCategory').value,
+          serviceAddress: document.getElementById('serviceAddress').value,
+          consumerNumber: document.getElementById('consumerNumber').value
+        };
+
+        try {
+          await API.register(payload);
+          alertBox.innerHTML = `<div class="alert alert-success">Account registered successfully! Redirecting to dashboard...</div>`;
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 900);
+        } catch (err) {
+          alertBox.innerHTML = `<div class="alert alert-danger">${escapeHtml(err.message)}</div>`;
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Create Account & Proceed to Dashboard →';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

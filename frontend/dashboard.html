@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | TN Energy Management</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <a href="dashboard.html" class="brand" aria-label="TN Energy Management Home">
+        <div class="brand-icon" aria-hidden="true">⚡</div>
+        <div>
+          <div class="brand-title">TN Energy Management</div>
+          <div class="brand-subtitle">Consumer Energy Portal</div>
+        </div>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <ul></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" id="welcomeUser">Energy Management Dashboard</h1>
+        <p class="page-desc" id="serviceLocationDesc">Tamil Nadu Electricity Supply &amp; Demand Overview</p>
+      </div>
+      <div style="display: flex; gap: 0.75rem;">
+        <a href="readings.html" class="btn btn-outline btn-sm">+ Record Reading</a>
+        <button id="refreshForecastBtn" class="btn btn-primary btn-sm">⚡ Run ML Forecast</button>
+      </div>
+    </div>
+
+    <!-- Anomaly notification banner (shows when anomaly is detected) -->
+    <div id="anomalyBanner" style="display:none;" class="alert alert-warning" role="alert">
+      <strong id="anomalyBannerPrefix">⚠️ Usage Anomaly Detected:</strong> <span id="anomalyBannerText"></span>
+    </div>
+
+    <!-- 4 KPI Summary Cards -->
+    <section class="grid-cols-4" aria-label="Key Performance Indicators">
+      <div class="card stat-card">
+        <div class="stat-label">Actual Consumption</div>
+        <div class="stat-value" id="actualKwhDisplay">0.0 <span style="font-size:1.1rem; font-weight:500;">kWh</span></div>
+        <div class="stat-sub" id="actualPeriodSub">Current billing cycle</div>
+      </div>
+
+      <div class="card stat-card blue">
+        <div class="stat-label">Estimated Bill (TNERC)</div>
+        <div class="stat-value" id="estimatedCostDisplay">₹ 0.00</div>
+        <div class="stat-sub" id="tariffVersionSub">Tariff: TNERC-TANGEDCO-2024-V1</div>
+      </div>
+
+      <div class="card stat-card amber">
+        <div class="stat-label">Predicted Demand (Next Cycle)</div>
+        <div class="stat-value" id="predictedKwhDisplay">0.0 <span style="font-size:1.1rem; font-weight:500;">kWh</span></div>
+        <div class="stat-sub" id="modelTypeSub">Model: XGBoost Supervised Regressor</div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="stat-label">Usage Pattern</div>
+        <div class="stat-value" style="font-size: 1.5rem; display:flex; align-items:center; height: 50px;">
+          <span id="patternBadge" class="badge badge-success">Analyzing</span>
+        </div>
+        <div class="stat-sub" id="patternSub">Classification from reading dynamics</div>
+      </div>
+    </section>
+
+    <!-- Chart & Live Actions -->
+    <div class="grid-cols-2">
+      <section class="card" aria-labelledby="chartSectionHeading">
+        <div class="card-header">
+          <h2 id="chartSectionHeading" class="card-title">Daily Electricity Consumption &amp; Forecast (kWh)</h2>
+          <span class="badge badge-info" id="chartStatusBadge">Real &amp; Projected</span>
+        </div>
+        <div style="position: relative; height: 320px; width: 100%;">
+          <canvas id="consumptionChart" role="img" aria-label="Line chart showing actual historical energy consumption versus XGBoost forecasted demand in kilowatt hours"></canvas>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="billBreakdownHeading">
+        <div class="card-header">
+          <h2 id="billBreakdownHeading" class="card-title">TNERC Bill Estimation Summary</h2>
+          <a href="billing.html" class="btn btn-outline btn-sm">Full Breakdown &rarr;</a>
+        </div>
+        <div class="bill-summary-box" role="region" aria-label="Current Estimated Bill Breakdown">
+          <div class="bill-line-item">
+            <span>Billing Units</span>
+            <strong id="billUnits">- kWh</strong>
+          </div>
+          <div class="bill-line-item">
+            <span>Gross Energy Charges</span>
+            <span id="billGross">-</span>
+          </div>
+          <div class="bill-line-item">
+            <span class="subsidy-text">TN Govt 100 Free Units Subsidy</span>
+            <span id="billSubsidy" class="subsidy-text">-</span>
+          </div>
+          <div class="bill-line-item">
+            <span>Fixed / Minimum Charges</span>
+            <span id="billFixed">-</span>
+          </div>
+          <div class="bill-line-item">
+            <span>Electricity Duty / Tax (5%)</span>
+            <span id="billTax">-</span>
+          </div>
+          <div class="bill-line-item total">
+            <span>Net Estimated Payable</span>
+            <span id="billTotal">₹ 0.00</span>
+          </div>
+        </div>
+        <p style="font-size:0.75rem; color:var(--text-tertiary); margin-top:0.75rem; text-align:right;">
+          * Note: Bill is an estimate calculated under official TNERC tariff rules. Official bills are issued bi-monthly by TANGEDCO.
+        </p>
+      </section>
+    </div>
+
+    <!-- Recent Readings and Telemetry Stream -->
+    <section class="card" aria-labelledby="recentReadingsHeading">
+      <div class="card-header">
+        <h2 id="recentReadingsHeading" class="card-title">Recent Meter Readings</h2>
+        <div>
+          <a href="readings.html" class="btn btn-outline btn-sm">View All Readings &rarr;</a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table id="recentReadingsTable">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Consumption (kWh)</th>
+              <th>Data Source</th>
+              <th>Quality Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5" style="text-align:center; color:var(--text-tertiary);">Loading readings history...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Cloud Computing in Energy Management System. Tamil Nadu Power Grid Analytics.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

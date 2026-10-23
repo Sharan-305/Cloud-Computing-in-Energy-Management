@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TNERC Bill Estimation | TN Energy Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <a href="dashboard.html" class="brand" aria-label="TN Energy Management Home">
+        <div class="brand-icon" aria-hidden="true">⚡</div>
+        <div>
+          <div class="brand-title">TN Energy Management</div>
+          <div class="brand-subtitle">Tamil Nadu Electricity Tariff Engine</div>
+        </div>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <ul></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Tamil Nadu Electricity Bill Estimator</h1>
+        <p class="page-desc">
+          Progressive slab calculations under TNERC comprehensive orders with Tamil Nadu Government 100 free units subsidy.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid-cols-2">
+      <!-- Calculator Controls -->
+      <section class="card" aria-labelledby="calcHeading">
+        <div class="card-header">
+          <h2 id="calcHeading" class="card-title">Bill Calculator Parameters</h2>
+          <span class="badge badge-info" id="tariffVersionBadge">TNERC-TANGEDCO-2024-V1</span>
+        </div>
+
+        <form id="calcForm">
+          <div class="form-group">
+            <label for="calcUnits">Consumption Units (kWh / Bi-Monthly Cycle)</label>
+            <input type="number" id="calcUnits" min="0" step="1" value="250" required>
+          </div>
+
+          <div class="form-group">
+            <label>Common Consumption Presets:</label>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button type="button" class="btn btn-outline btn-sm preset-btn" data-units="95">95 Units (100% Free)</button>
+              <button type="button" class="btn btn-outline btn-sm preset-btn" data-units="180">180 Units</button>
+              <button type="button" class="btn btn-outline btn-sm preset-btn" data-units="320">320 Units</button>
+              <button type="button" class="btn btn-outline btn-sm preset-btn" data-units="550">550 Units</button>
+              <button type="button" class="btn btn-outline btn-sm preset-btn" data-units="850">850 Units</button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="calcCategory">Tariff Category</label>
+              <select id="calcCategory">
+                <option value="domestic" selected>Domestic LT-1A (Bi-Monthly)</option>
+                <option value="commercial">Commercial LT-IIIA (Monthly)</option>
+                <option value="industrial">Industrial LT-IIIB (Monthly)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="saveRecord">Save to Historical Records</label>
+              <select id="saveRecord">
+                <option value="true">Yes, record this calculation</option>
+                <option value="false">Live preview only</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem;">
+            <button type="submit" id="calculateBtn" class="btn btn-primary" style="width: 100%;">
+              Calculate Estimated Bill &rarr;
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Result Breakdown Card -->
+      <section class="card" aria-labelledby="summaryHeading">
+        <div class="card-header">
+          <h2 id="summaryHeading" class="card-title">Estimated Bill Summary</h2>
+          <span class="badge badge-success" id="billingCycleBadge">Bi-Monthly Cycle</span>
+        </div>
+
+        <div class="bill-summary-box" role="region" aria-label="Bill Breakdown Calculation">
+          <div class="bill-line-item">
+            <span>Total Units Billed:</span>
+            <strong id="resUnits">250 kWh</strong>
+          </div>
+          <div class="bill-line-item">
+            <span>Gross Energy Charges:</span>
+            <span id="resGross">₹ 1,125.00</span>
+          </div>
+          <div class="bill-line-item">
+            <span class="subsidy-text">TN Govt 100 Free Units Subsidy:</span>
+            <span id="resSubsidy" class="subsidy-text">- ₹ 450.00</span>
+          </div>
+          <div class="bill-line-item">
+            <span>Net Energy Charges:</span>
+            <span id="resNetEnergy">₹ 675.00</span>
+          </div>
+          <div class="bill-line-item">
+            <span>Fixed / Minimum Charges:</span>
+            <span id="resFixed">+ ₹ 30.00</span>
+          </div>
+          <div class="bill-line-item">
+            <span>Electricity Duty / Tax (5%):</span>
+            <span id="resTax">+ ₹ 33.75</span>
+          </div>
+          <div class="bill-line-item total">
+            <span>Net Estimated Payable:</span>
+            <span id="resTotal">₹ 738.75</span>
+          </div>
+        </div>
+
+        <div class="alert alert-info" style="margin-top:1.25rem; font-size:0.86rem; padding:0.85rem 1rem;">
+          <strong>Official Subsidy Note:</strong> Under G.O.Ms.No.27 (Energy Dept, Tamil Nadu), domestic consumers receive up to 100 units free per bi-monthly billing period fully subsidized by the Government of Tamil Nadu.
+        </div>
+      </section>
+    </div>
+
+    <!-- Progressive Slab Details Table -->
+    <section class="card" style="margin-top: 1.5rem;" aria-labelledby="slabHeading">
+      <div class="card-header">
+        <h2 id="slabHeading" class="card-title">Detailed Progressive Slab-by-Slab Calculation</h2>
+      </div>
+      <div class="table-responsive">
+        <table id="slabBreakdownTable">
+          <thead>
+            <tr>
+              <th>Slab Name</th>
+              <th>Billed Units</th>
+              <th>Rate / Unit</th>
+              <th>Govt Subsidy / Unit</th>
+              <th>Gross Charge</th>
+              <th>Subsidy Deducted</th>
+              <th>Net Charge</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="7" style="text-align:center; color:var(--text-tertiary);">Enter consumption units to generate breakdown</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Saved History -->
+    <section class="card" style="margin-top: 1.5rem;" aria-labelledby="historyHeading">
+      <div class="card-header">
+        <h2 id="historyHeading" class="card-title">Saved Historical Estimates</h2>
+      </div>
+      <div class="table-responsive">
+        <table id="billingHistoryTable">
+          <thead>
+            <tr>
+              <th>Calculation Date</th>
+              <th>Units (kWh)</th>
+              <th>Category</th>
+              <th>Gross Charge</th>
+              <th>TN Subsidy</th>
+              <th>Net Estimated Payable</th>
+              <th>Tariff Version</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="7" style="text-align:center; color:var(--text-tertiary);">Loading billing history...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Cloud Computing in Energy Management System. Tamil Nadu Power Grid Analytics. Tariff rules effective under TNERC comprehensive tariff guidelines.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      runCalculation();
+      loadBillingHistory();
+
+      document.getElementById('calcForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        runCalculation();
+      });
+
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('calcUnits').value = btn.getAttribute('data-units');
+          runCalculation();
+        });
+      });
+    });
+
+    async function runCalculation() {
+      const units = Number(document.getElementById('calcUnits').value) || 0;
+      const category = document.getElementById('calcCategory').value;
+      const saveRecord = document.getElementById('saveRecord').value === 'true';
+
+      const btn = document.getElementById('calculateBtn');
+      btn.disabled = true;
+      btn.textContent = 'Calculating...';
+
+      try {
+        const res = await API.calculateEstimate({
+          unitsKwh: units,
+          tariffCategory: category,
+          saveRecord
+        });
+
+        const est = res.estimate;
+        document.getElementById('resUnits').textContent = `${est.totalUnitsKwh} kWh`;
+        document.getElementById('resGross').textContent = `₹ ${est.grossEnergyCharge.toFixed(2)}`;
+        document.getElementById('resSubsidy').textContent = `- ₹ ${est.subsidyAmount.toFixed(2)}`;
+        document.getElementById('resNetEnergy').textContent = `₹ ${est.netEnergyCharge.toFixed(2)}`;
+        document.getElementById('resFixed').textContent = `+ ₹ ${est.fixedCharge.toFixed(2)}`;
+        document.getElementById('resTax').textContent = `+ ₹ ${est.taxAmount.toFixed(2)}`;
+        document.getElementById('resTotal').textContent = `₹ ${est.estimatedAmount.toFixed(2)}`;
+
+        document.getElementById('tariffVersionBadge').textContent = est.tariffVersion;
+        document.getElementById('billingCycleBadge').textContent = est.billingCycle.toUpperCase();
+
+        const slabTbody = document.querySelector('#slabBreakdownTable tbody');
+        if (est.breakdown && est.breakdown.length > 0) {
+          slabTbody.innerHTML = est.breakdown.map(s => `
+            <tr>
+              <td><strong>${escapeHtml(s.slabName)}</strong></td>
+              <td>${s.units} kWh</td>
+              <td>₹ ${s.ratePerUnit.toFixed(2)}</td>
+              <td class="subsidy-text">₹ ${s.subsidyPerUnit.toFixed(2)}</td>
+              <td>₹ ${s.grossCharge.toFixed(2)}</td>
+              <td class="subsidy-text">- ₹ ${s.subsidyAmount.toFixed(2)}</td>
+              <td><strong>₹ ${s.netCharge.toFixed(2)}</strong></td>
+            </tr>
+          `).join('');
+        } else {
+          slabTbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">0 units consumed. Net bill is ₹ 0.00.</td></tr>`;
+        }
+
+        if (saveRecord) {
+          await loadBillingHistory();
+        }
+      } catch (err) {
+        alert('Calculation error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Calculate Estimated Bill →';
+      }
+    }
+
+    async function loadBillingHistory() {
+      const tbody = document.querySelector('#billingHistoryTable tbody');
+      try {
+        const res = await API.getBillingHistory();
+        const history = res.history || [];
+
+        if (history.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-tertiary); padding:1.5rem;">No saved calculations yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = history.slice(0, 10).map(h => {
+          const d = new Date(h.calculatedAt).toLocaleDateString('en-IN', {
+            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+          return `
+            <tr>
+              <td>${d}</td>
+              <td><strong>${Number(h.totalUnitsKwh).toFixed(1)} kWh</strong></td>
+              <td><span class="badge badge-info">${h.tariffCategory || 'domestic'}</span></td>
+              <td>₹ ${Number(h.energyCharge).toFixed(2)}</td>
+              <td class="subsidy-text">- ₹ ${Number(h.subsidyAmount).toFixed(2)}</td>
+              <td><strong>₹ ${Number(h.estimatedAmount).toFixed(2)}</strong></td>
+              <td><span style="font-size:0.8rem; color:var(--text-tertiary);">${h.tariffVersion}</span></td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--color-red);">${err.message}</td></tr>`;
+      }
+    }
+  </script>
+</body>
+</html>

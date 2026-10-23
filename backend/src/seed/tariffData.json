@@ -1,0 +1,140 @@
+[
+  {
+    "state": "Tamil Nadu",
+    "discom": "TANGEDCO",
+    "tariffCategory": "domestic",
+    "tariffCode": "LT-1A",
+    "billingCycle": "bi-monthly",
+    "version": "TNERC-TANGEDCO-2024-V1",
+    "effectiveFrom": "2024-01-01T00:00:00.000Z",
+    "effectiveTo": null,
+    "freeUnitsAllowed": 100,
+    "fixedCharges": 30.0,
+    "taxPercentage": 5.0,
+    "sourceOrder": "TNERC Comprehensive Tariff Order & Tamil Nadu Free 100 Units Scheme (G.O.Ms.No.27)",
+    "subsidyRules": [
+      "Government of Tamil Nadu 100 Free Units Subsidy for Domestic Connections",
+      "Concessional tariff for 101-200 units"
+    ],
+    "slabs": [
+      {
+        "slabName": "0 to 100 units (100% Subsidized)",
+        "minUnits": 0,
+        "maxUnits": 100,
+        "ratePerUnit": 4.50,
+        "subsidyPerUnit": 4.50
+      },
+      {
+        "slabName": "101 to 200 units",
+        "minUnits": 100,
+        "maxUnits": 200,
+        "ratePerUnit": 4.50,
+        "subsidyPerUnit": 2.25
+      },
+      {
+        "slabName": "201 to 400 units",
+        "minUnits": 200,
+        "maxUnits": 400,
+        "ratePerUnit": 4.50,
+        "subsidyPerUnit": 0.00
+      },
+      {
+        "slabName": "401 to 500 units",
+        "minUnits": 400,
+        "maxUnits": 500,
+        "ratePerUnit": 6.00,
+        "subsidyPerUnit": 0.00
+      },
+      {
+        "slabName": "501 to 600 units",
+        "minUnits": 500,
+        "maxUnits": 600,
+        "ratePerUnit": 8.00,
+        "subsidyPerUnit": 0.00
+      },
+      {
+        "slabName": "601 to 800 units",
+        "minUnits": 600,
+        "maxUnits": 800,
+        "ratePerUnit": 9.00,
+        "subsidyPerUnit": 0.00
+      },
+      {
+        "slabName": "801 to 1000 units",
+        "minUnits": 800,
+        "maxUnits": 1000,
+        "ratePerUnit": 10.00,
+        "subsidyPerUnit": 0.00
+      },
+      {
+        "slabName": "Above 1000 units",
+        "minUnits": 1000,
+        "maxUnits": null,
+        "ratePerUnit": 11.00,
+        "subsidyPerUnit": 0.00
+      }
+    ]
+  },
+  {
+    "state": "Tamil Nadu",
+    "discom": "TANGEDCO",
+    "tariffCategory": "commercial",
+    "tariffCode": "LT-IIIA",
+    "billingCycle": "monthly",
+    "version": "TNERC-TANGEDCO-2024-V1",
+    "effectiveFrom": "2024-01-01T00:00:00.000Z",
+    "effectiveTo": null,
+    "freeUnitsAllowed": 0,
+    "fixedCharges": 120.0,
+    "taxPercentage": 5.0,
+    "sourceOrder": "TNERC Commercial Low Tension Tariff Schedule",
+    "subsidyRules": [],
+    "slabs": [
+      {
+        "slabName": "0 to 100 units",
+        "minUnits": 0,
+        "maxUnits": 100,
+        "ratePerUnit": 6.50,
+        "subsidyPerUnit": 0.00
+      },
+      {
+        "slabName": "101 to 500 units",
+        "minUnits": 100,
+        "maxUnits": 500,
+        "ratePerUnit": 8.50,
+        "subsidyPerUnit": 0.00
+      },
+      {
+        "slabName": "Above 500 units",
+        "minUnits": 500,
+        "maxUnits": null,
+        "ratePerUnit": 10.00,
+        "subsidyPerUnit": 0.00
+      }
+    ]
+  },
+  {
+    "state": "Tamil Nadu",
+    "discom": "TANGEDCO",
+    "tariffCategory": "industrial",
+    "tariffCode": "LT-IIIB",
+    "billingCycle": "monthly",
+    "version": "TNERC-TANGEDCO-2024-V1",
+    "effectiveFrom": "2024-01-01T00:00:00.000Z",
+    "effectiveTo": null,
+    "freeUnitsAllowed": 0,
+    "fixedCharges": 150.0,
+    "taxPercentage": 5.0,
+    "sourceOrder": "TNERC Industrial Low Tension Tariff Schedule",
+    "subsidyRules": [],
+    "slabs": [
+      {
+        "slabName": "All Units Standard Industrial Rate",
+        "minUnits": 0,
+        "maxUnits": null,
+        "ratePerUnit": 7.65,
+        "subsidyPerUnit": 0.00
+      }
+    ]
+  }
+]

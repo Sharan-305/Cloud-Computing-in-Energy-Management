@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Computing in Energy Management | Tamil Nadu</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="brand" aria-label="TN Energy Management Home">
+        <div class="brand-icon" aria-hidden="true">⚡</div>
+        <div>
+          <div class="brand-title">TN Energy Management</div>
+          <div class="brand-subtitle">Cloud &amp; AI Power Grid</div>
+        </div>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <ul></ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section style="text-align:center; padding: 3rem 1rem 2.5rem; max-width: 920px; margin: 0 auto;" aria-labelledby="heroTitle">
+      <span class="badge badge-success" style="font-size:0.8rem; padding:0.4rem 1rem; margin-bottom:1.5rem;">
+        Official TNERC Tariff Orders &amp; Machine-Learning Forecasting
+      </span>
+      <h1 id="heroTitle" style="font-size: 2.75rem; font-weight: 800; color: var(--text-primary); line-height: 1.18; letter-spacing: -0.03em; margin-top: 1rem;">
+        Cloud Computing in Energy Management
+      </h1>
+      <p style="font-size: 1.2rem; color: var(--text-secondary); margin: 1.25rem auto 2.25rem; max-width: 780px; line-height: 1.6;">
+        Empowering Tamil Nadu households and industries with real-time electricity monitoring, transparent TANGEDCO cost estimation, and predictive energy analytics powered by XGBoost.
+      </p>
+      <div style="display:flex; justify-content:center; gap: 1rem; flex-wrap:wrap;">
+        <a href="register.html" class="btn btn-primary" style="padding: 0.85rem 2rem; font-size:1.02rem;">
+          Register Account in Tamil Nadu &rarr;
+        </a>
+        <a href="login.html" class="btn btn-outline" style="padding: 0.85rem 2rem; font-size:1.02rem;">
+          Sign In
+        </a>
+      </div>
+    </section>
+
+    <section class="grid-cols-4" style="margin-top: 1.5rem;" aria-label="System Highlights">
+      <div class="card stat-card">
+        <div class="stat-label">Coverage</div>
+        <div class="stat-value">38</div>
+        <div class="stat-sub">Districts of Tamil Nadu integrated with verified postal codes</div>
+      </div>
+      <div class="card stat-card blue">
+        <div class="stat-label">Tariff Engine</div>
+        <div class="stat-value">TNERC</div>
+        <div class="stat-sub">Slab-based bi-monthly calculation with 100 free units subsidy</div>
+      </div>
+      <div class="card stat-card amber">
+        <div class="stat-label">ML Forecast</div>
+        <div class="stat-value">XGBoost</div>
+        <div class="stat-sub">Supervised time-series regression with lag &amp; rolling averages</div>
+      </div>
+      <div class="card stat-card red">
+        <div class="stat-label">Security &amp; Cloud</div>
+        <div class="stat-value">Atlas</div>
+        <div class="stat-sub">MongoDB Atlas persistent store with bcrypt &amp; role isolation</div>
+      </div>
+    </section>
+
+    <div class="grid-cols-2">
+      <section class="card" aria-labelledby="tariffExplHeading">
+        <div class="card-header">
+          <h2 id="tariffExplHeading" class="card-title">How Tamil Nadu Tariff Estimation Works</h2>
+        </div>
+        <p style="color:var(--text-secondary); font-size:0.95rem; line-height:1.6; margin-bottom:1rem;">
+          Electricity billing in Tamil Nadu follows progressive slab structures approved by the Tamil Nadu Electricity Regulatory Commission (TNERC).
+        </p>
+        <ul style="padding-left:1.5rem; color:var(--text-primary); font-size:0.95rem; line-height:1.8;">
+          <li><strong>0 to 100 units:</strong> 100% Free under the Tamil Nadu Government Domestic Subsidy scheme.</li>
+          <li><strong>101 to 200 units:</strong> Subsidized concessional rate of ₹2.25/unit.</li>
+          <li><strong>201 to 400 units:</strong> Standard energy rate of ₹4.50/unit.</li>
+          <li><strong>Above 400 units:</strong> Higher tier rates with fixed charges and 5% Electricity Duty.</li>
+        </ul>
+        <div style="margin-top:1.5rem;">
+          <a href="billing.html" class="btn btn-secondary btn-sm">Try Interactive Bill Calculator &rarr;</a>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="mlExplHeading">
+        <div class="card-header">
+          <h2 id="mlExplHeading" class="card-title">XGBoost Usage Pattern &amp; Forecasting</h2>
+        </div>
+        <p style="color:var(--text-secondary); font-size:0.95rem; line-height:1.6; margin-bottom:1rem;">
+          Instead of inventing electricity prices, our machine learning pipeline strictly forecasts kilowatt-hour (kWh) consumption.
+        </p>
+        <ul style="padding-left:1.5rem; color:var(--text-primary); font-size:0.95rem; line-height:1.8;">
+          <li>Chronological feature engineering: Lag-1, Lag-2, Lag-7, and 7-day rolling statistics.</li>
+          <li>Pattern identification: Stable, Increasing, Seasonal, Peak-Heavy, or Irregular.</li>
+          <li>Statistical anomaly detection to alert unexpected spikes or outages.</li>
+          <li>Pipes forecasted kWh through the official Tamil Nadu Tariff Engine to yield future cost estimates in ₹ (INR).</li>
+        </ul>
+        <div style="margin-top:1.5rem;">
+          <a href="predictions.html" class="btn btn-primary btn-sm">Explore ML Forecasting &rarr;</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Cloud Computing in Energy Management System. Tamil Nadu Power Grid Analytics. Built with Node.js, Express, MongoDB Atlas, and XGBoost.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

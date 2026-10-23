@@ -1,0 +1,606 @@
+/* ==========================================================================
+   Apple Design System Grounded UI - Tamil Nadu Energy Management System
+   Compliant with Apple Human Interface Guidelines (Typography, Color, Layout,
+   Accessibility, Material Translucency, Forms & Controls)
+   ========================================================================== */
+
+:root {
+  /* Apple-standard Semantic Palette with High-Contrast Ratios */
+  --system-bg: #f8fafc;
+  --system-surface: #ffffff;
+  --system-surface-elevated: #ffffff;
+  --system-grouped-bg: #f1f5f9;
+
+  /* Typography & Text Contrast (WCAG AAA / AA Verified) */
+  --text-primary: #0f172a;       /* Contrast against white: 16.0:1 (AAA) */
+  --text-secondary: #475569;     /* Contrast against white: 5.8:1 (AA) */
+  --text-tertiary: #64748b;      /* Footnotes/Captions: 4.6:1 */
+  --text-on-accent: #ffffff;
+
+  /* Brand / Tamil Nadu Clean Grid Colors */
+  --color-green: #059669;        /* TANGEDCO Subsidy / 100 Free Units / Energy Savings */
+  --color-green-dark: #047857;   /* Hover / Active */
+  --color-green-subtle: #ecfdf5; /* Tinted pill background */
+  --color-green-border: #a7f3d0;
+
+  --color-blue: #0284c7;         /* Telemetry / IoT / Forecast */
+  --color-blue-dark: #0369a1;
+  --color-blue-subtle: #f0f9ff;
+  --color-blue-border: #bae6fd;
+
+  --color-amber: #d97706;        /* Anomaly / Peak Heavy Usage */
+  --color-amber-subtle: #fffbeb;
+  --color-amber-border: #fde68a;
+
+  --color-red: #dc2626;          /* Danger / Error */
+  --color-red-subtle: #fef2f2;
+  --color-red-border: #fecaca;
+
+  /* Elevation, Borders & Glass Material */
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-focus: #059669;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Multi-layered Apple Shadows */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.03);
+  --shadow-hover: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 10px 24px -4px rgba(15, 23, 42, 0.06);
+
+  /* Apple Liquid Glass Material (Functional Layer Only) */
+  --nav-glass: rgba(255, 255, 255, 0.85);
+  --glass-blur: blur(20px) saturate(180%);
+}
+
+/* Base Reset & Apple Typography */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--system-bg);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", -apple-system-headline, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tabular Numbers for Energy, Units & Currency */
+.stat-value, .bill-line-item strong, .bill-line-item span, table td strong, table td code {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Header & Translucent Navigation Bar (Apple Material Pattern)
+   ========================================================================== */
+header {
+  background: var(--nav-glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background-color 0.2s ease;
+}
+
+.nav-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(145deg, var(--color-green), var(--color-blue));
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+}
+
+.brand-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.brand-subtitle {
+  font-size: 0.72rem;
+  color: var(--color-green-dark);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Apple-style Navigation Tabs */
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.92rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+}
+
+nav a:hover {
+  color: var(--text-primary);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+nav a.active {
+  color: var(--color-green-dark);
+  background: var(--color-green-subtle);
+  font-weight: 600;
+}
+
+.btn-nav-auth {
+  background: var(--color-green) !important;
+  color: #ffffff !important;
+  padding: 0.45rem 1.1rem !important;
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600 !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-nav-auth:hover {
+  background: var(--color-green-dark) !important;
+}
+
+/* ==========================================================================
+   Page Layout & Typography Scale
+   ========================================================================== */
+main {
+  flex: 1;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.25rem 1.5rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.page-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.page-desc {
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+  font-size: 0.95rem;
+}
+
+/* Layout Grids */
+.grid-cols-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.grid-cols-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* ==========================================================================
+   Cards, Surfaces & Elevation (Apple HIG Craft)
+   ========================================================================== */
+.card {
+  background: var(--system-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+/* Stat KPI Cards */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-top: 4px solid var(--color-green);
+}
+
+.stat-card.blue { border-top-color: var(--color-blue); }
+.stat-card.amber { border-top-color: var(--color-amber); }
+.stat-card.red { border-top-color: var(--color-red); }
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-value {
+  font-size: 2.15rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin: 0.35rem 0;
+  line-height: 1.1;
+}
+
+.stat-sub {
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Badges & Tags (Semantic Status Indicators)
+   ========================================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.badge-success {
+  background: var(--color-green-subtle);
+  color: var(--color-green-dark);
+  border: 1px solid var(--color-green-border);
+}
+
+.badge-info {
+  background: var(--color-blue-subtle);
+  color: var(--color-blue-dark);
+  border: 1px solid var(--color-blue-border);
+}
+
+.badge-warning {
+  background: var(--color-amber-subtle);
+  color: var(--color-amber);
+  border: 1px solid var(--color-amber-border);
+}
+
+.badge-danger {
+  background: var(--color-red-subtle);
+  color: var(--color-red);
+  border: 1px solid var(--color-red-border);
+}
+
+/* ==========================================================================
+   Forms, Text Fields & Controls (Touch Target ≥ 44pt / 44px)
+   ========================================================================== */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+label {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.45rem;
+}
+
+input, select, textarea {
+  width: 100%;
+  min-height: 44px; /* Apple minimum touch target height */
+  padding: 0.65rem 0.95rem;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  background: var(--system-surface);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Apple Keyboard Focus Ring */
+input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.25);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* ==========================================================================
+   Buttons & Interactive Elements (Apple HIG Sizing & Style)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px; /* 44px HIG minimum touch requirement */
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.94rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  user-select: none;
+}
+
+.btn:active {
+  transform: scale(0.985);
+}
+
+.btn-primary {
+  background: var(--color-green);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--color-green-dark);
+}
+
+.btn-secondary {
+  background: var(--color-blue);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(2, 132, 199, 0.2);
+}
+
+.btn-secondary:hover {
+  background: var(--color-blue-dark);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: var(--text-primary);
+}
+
+.btn-outline:hover {
+  background: var(--system-grouped-bg);
+  border-color: #94a3b8;
+}
+
+.btn-sm {
+  min-height: 34px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.84rem;
+}
+
+/* Preset Segmented Buttons */
+.preset-btn {
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  padding: 0.35rem 0.95rem;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+}
+
+.preset-btn:hover {
+  border-color: var(--color-green);
+  background: var(--color-green-subtle);
+  color: var(--color-green-dark);
+}
+
+/* ==========================================================================
+   Alert Banners (Respectful & Clear)
+   ========================================================================== */
+.alert {
+  padding: 0.95rem 1.25rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  line-height: 1.45;
+}
+
+.alert-warning {
+  background: var(--color-amber-subtle);
+  border: 1px solid var(--color-amber-border);
+  color: #92400e;
+}
+
+.alert-danger {
+  background: var(--color-red-subtle);
+  border: 1px solid var(--color-red-border);
+  color: #991b1b;
+}
+
+.alert-success {
+  background: var(--color-green-subtle);
+  border: 1px solid var(--color-green-border);
+  color: #065f46;
+}
+
+.alert-info {
+  background: var(--color-blue-subtle);
+  border: 1px solid var(--color-blue-border);
+  color: #0369a1;
+}
+
+/* ==========================================================================
+   Tables & Data Presentation (Clean Apple Inset Grouping)
+   ========================================================================== */
+.table-responsive {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+th {
+  background: var(--system-grouped-bg);
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: rgba(15, 23, 42, 0.015);
+}
+
+/* ==========================================================================
+   Bill Summary Box (TNERC Transparency)
+   ========================================================================== */
+.bill-summary-box {
+  background: var(--system-grouped-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.35rem;
+}
+
+.bill-line-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed rgba(15, 23, 42, 0.12);
+  font-size: 0.94rem;
+}
+
+.bill-line-item.total {
+  border-bottom: none;
+  border-top: 2px solid var(--text-primary);
+  font-weight: 800;
+  font-size: 1.45rem;
+  color: var(--color-green-dark);
+  padding-top: 0.95rem;
+  margin-top: 0.65rem;
+}
+
+.subsidy-text {
+  color: var(--color-green-dark);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+footer {
+  background: var(--system-surface);
+  border-top: 1px solid var(--border-subtle);
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: auto;
+}
+
+/* ==========================================================================
+   Accessibility: Reduced Motion Preference (Apple HIG Requirement)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .nav-container { flex-direction: column; gap: 0.85rem; padding: 0.75rem 1rem; }
+  nav ul { flex-wrap: wrap; justify-content: center; gap: 0.4rem; }
+  .grid-cols-2 { grid-template-columns: 1fr; }
+  .grid-cols-4 { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .page-title { font-size: 1.6rem; }
+}
