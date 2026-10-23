@@ -82,28 +82,6 @@ JWT_SECRET=your_secure_jwt_secret_key_here
 PORT=5000
 ```
 
-### 3. Seed Master Datasets (Districts & Official Tariffs)
-Populates the 38 Tamil Nadu districts and TNERC tariff rate master rules:
-```bash
-npm run seed
-```
-*(Note: Per project requirements, no fake users or demo accounts are seeded. Genuine accounts are registered through the app).*
-
-### 4. Run Unit Tests
-```bash
-npm test
-```
-All 12 unit tests verifying TNERC 100 free units subsidy, progressive slabs, pattern classifiers, and bcrypt authentication will execute and pass.
-
-### 5. Launch the Application
-```bash
-npm start
-```
-The server starts at `http://localhost:5000`:
-- **Web Application:** `http://localhost:5000`
-- **Health Check:** `http://localhost:5000/api/health`
-
----
 
 ## ☁️ Cloud Deployment Guide
 
